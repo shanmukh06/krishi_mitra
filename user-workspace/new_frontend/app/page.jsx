@@ -24,11 +24,23 @@ export default function AdvisoryPage() {
 
       const res = await fetch(`/api/advisory?lat=${lat}&lng=${lng}&date=${date}`)
       if (!res.ok) {
-        const errorData = await res.json()
-        throw new Error(errorData.error || 'Failed to get advisory')
+        try {
+          const errorData = await res.json()
+          throw new Error(errorData.error || 'Failed to get advisory')
+        } catch (jsonError) {
+          throw new Error(`Server error: ${res.status}`)
+        }
       }
       
+      const contentType = res.headers.get('content-type')
+      if (!contentType || !contentType.includes('application/json')) {
+        throw new Error('Invalid response format')
+      }
+
       const data = await res.json()
+      if (!data || typeof data !== 'object') {
+        throw new Error('Invalid advisory data received')
+      }
       setAdvisory(data)
     } catch (err) {
       console.error('Advisory error:', err)
