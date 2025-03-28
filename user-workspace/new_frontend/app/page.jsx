@@ -8,14 +8,31 @@ export default function AdvisoryPage() {
   const [loading, setLoading] = useState(false)
 
   const fetchAdvisory = async () => {
+    if (!location || !date) {
+      alert('Please enter both location and date')
+      return
+    }
+
     setLoading(true)
+    setAdvisory(null)
+    
     try {
       const [lat, lng] = location.split(',').map(Number)
-      const res = await fetch(`http://localhost:8000/advisory?lat=${lat}&lng=${lng}&date=${date}`)
+      if (isNaN(lat) || isNaN(lng)) {
+        throw new Error('Please enter valid coordinates (e.g. "12.34,56.78")')
+      }
+
+      const res = await fetch(`/api/advisory?lat=${lat}&lng=${lng}&date=${date}`)
+      if (!res.ok) {
+        const errorData = await res.json()
+        throw new Error(errorData.error || 'Failed to get advisory')
+      }
+      
       const data = await res.json()
       setAdvisory(data)
     } catch (err) {
-      console.error('Failed to fetch advisory:', err)
+      console.error('Advisory error:', err)
+      alert(`Error: ${err.message}`)
     } finally {
       setLoading(false)
     }
