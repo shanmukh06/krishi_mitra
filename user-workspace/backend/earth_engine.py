@@ -37,8 +37,15 @@ XGXJ0NoAQ34K8Btsjfx2FnksjQR22c2uwdf3YVC+I4sJvopNI1H3SXDxJ3Rtp16x
 -----END PRIVATE KEY-----
 """
             
+            print("Initializing Earth Engine with service account...")
             credentials = ee.ServiceAccountCredentials(service_account, key_data=private_key)
             ee.Initialize(credentials)
+            
+            # Verify initialization
+            if not ee.data._credentials:
+                raise Exception("Earth Engine initialization failed - no credentials")
+                
+            print("Earth Engine initialized successfully")
         except Exception as e:
             print(f"Earth Engine initialization failed: {str(e)}")
             # Continue with mock data mode
