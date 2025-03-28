@@ -63,10 +63,10 @@ XGXJ0NoAQ34K8Btsjfx2FnksjQR22c2uwdf3YVC+I4sJvopNI1H3SXDxJ3Rtp16x
             print("Checking Earth Engine access...")
             print(f"Available datasets: {ee.data.getAssetRoots()}")
             
-            print("Accessing MODIS land surface temperature...")
-            modis = ee.ImageCollection('MODIS/061/MOD11A1') \
+            print("Accessing MODIS/006/MOD44B Vegetation Continuous Fields...")
+            modis = ee.ImageCollection('MODIS/006/MOD44B') \
                 .filterDate(date, ee.Date(date).advance(1, 'day')) \
-                .select('LST_Day_1km') \
+                .select('Percent_Tree_Cover') \
                 .first()
             
             if not modis:
