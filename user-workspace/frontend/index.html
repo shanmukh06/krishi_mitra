@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FarmAI Advisory System</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="favicon.ico">
+</head>
+<body>
+    <div id="app">
+        <header>
+            <h1>FarmAI Advisory</h1>
+            <p>Get personalized farming recommendations</p>
+        </header>
+        
+        <main>
+            <div id="loading">
+                <div class="spinner"></div>
+                <p>Detecting your location...</p>
+            </div>
+            
+            <div id="error-message"></div>
+            
+            <div id="advisory-results"></div>
+        </main>
+    </div>
+    
+    <script src="app.js"></script>
+</body>
+</html>

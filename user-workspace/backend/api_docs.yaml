@@ -1,0 +1,185 @@
+openapi: 3.0.0
+info:
+  title: FarmAI API
+  description: Agricultural advisory system API
+  version: 1.0.0
+  contact:
+    email: support@farmai.example.com
+
+servers:
+  - url: http://localhost:8000
+    description: Development server
+
+paths:
+  /health:
+    get:
+      summary: Service health check
+      responses:
+        '200':
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: healthy
+
+  /weather:
+    get:
+      summary: Get weather data
+      parameters:
+        - name: lat
+          in: query
+          required: true
+          schema:
+            type: number
+            format: float
+            minimum: -90
+            maximum: 90
+        - name: lng
+          in: query
+          required: true
+          schema:
+            type: number
+            format: float
+            minimum: -180
+            maximum: 180
+      responses:
+        '200':
+          description: Weather data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WeatherData'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /soil:
+    get:
+      summary: Get soil analysis
+      parameters:
+        - $ref: '#/components/parameters/Latitude'
+        - $ref: '#/components/parameters/Longitude'
+      responses:
+        '200':
+          description: Soil data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SoilData'
+        '400':
+          $ref: '#/components/responses/InvalidInput'
+
+  /advisory:
+    get:
+      summary: Get farming advisory
+      parameters:
+        - $ref: '#/components/parameters/Latitude'
+        - $ref: '#/components/parameters/Longitude'
+      responses:
+        '200':
+          description: AI-generated advisory
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Advisory'
+        '400':
+          $ref: '#/components/responses/InvalidInput'
+
+components:
+  schemas:
+    WeatherData:
+      type: object
+      properties:
+        temperature:
+          type: number
+          format: float
+          description: Current temperature in Celsius
+        precipitation:
+          type: number
+          format: float
+          description: Rainfall in mm
+        status:
+          type: string
+          description: Request status
+
+    SoilData:
+      type: object
+      properties:
+        moisture:
+          type: number
+          format: float
+          description: Soil moisture percentage
+        ph:
+          type: number
+          format: float
+          description: Soil pH level
+        status:
+          type: string
+          description: Request status
+
+    Advisory:
+      type: object
+      properties:
+        recommendation:
+          type: string
+          description: AI-generated farming advice
+        confidence:
+          type: number
+          format: float
+          minimum: 0
+          maximum: 100
+          description: Confidence score (0-100)
+        optimal_period:
+          type: string
+          description: Best time to implement
+        status:
+          type: string
+          description: Request status
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error message
+        status:
+          type: string
+          description: error
+
+  parameters:
+    Latitude:
+      name: lat
+      in: query
+      required: true
+      schema:
+        type: number
+        format: float
+        minimum: -90
+        maximum: 90
+      description: Latitude coordinate (-90 to 90)
+
+    Longitude:
+      name: lng
+      in: query
+      required: true
+      schema:
+        type: number
+        format: float
+        minimum: -180
+        maximum: 180
+      description: Longitude coordinate (-180 to 180)
+
+  responses:
+    InvalidInput:
+      description: Invalid input parameters
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
